@@ -1,0 +1,9 @@
+E:\Local\FuzzyStringCompare\StringCompare\bin\Debug\StringCompare.exe.config
+E:\Local\FuzzyStringCompare\StringCompare\bin\Debug\StringCompare.exe
+E:\Local\FuzzyStringCompare\StringCompare\bin\Debug\StringCompare.pdb
+E:\Local\FuzzyStringCompare\StringCompare\obj\Debug\StringCompare.csprojResolveAssemblyReference.cache
+E:\Local\FuzzyStringCompare\StringCompare\obj\Debug\StringCompare.Form1.resources
+E:\Local\FuzzyStringCompare\StringCompare\obj\Debug\StringCompare.Properties.Resources.resources
+E:\Local\FuzzyStringCompare\StringCompare\obj\Debug\StringCompare.csproj.GenerateResource.Cache
+E:\Local\FuzzyStringCompare\StringCompare\obj\Debug\StringCompare.exe
+E:\Local\FuzzyStringCompare\StringCompare\obj\Debug\StringCompare.pdb
