@@ -68,6 +68,10 @@ namespace StringCompare
             comparers.Add(new LevenshtainComparer());
             comparers.Add(new Sift4DistanceComparer());
             comparers.Add(new CompareOrdinalComparer());
+            comparers.Add(new JaroWinklerComparer());
+            comparers.Add(new HammingComparer());
+            comparers.Add(new DamerauLevenshteinComparer());
+            comparers.Add(new SorensenDiceComparer());
 
             comparers.ForEach(fe => fe.init(this.inputWords));
             t.Enabled = true;
@@ -118,14 +122,21 @@ namespace StringCompare
             var s = entity.sentenses[r.Next(entity.sentenses.Count)];
             var original_s = s;
             bool doModify = (r.Next(2) == 0);
-            if (doModify)
+            if (doModify && tbMAXMistakes.Value > 0)
             {
-                s = swapWords(s, r.Next(3));
-                if (LevenshteinDistance.Compute(original_s, s) < 20)
-                { s = swapChars(s, r.Next(4)); }
-                if (LevenshteinDistance.Compute(original_s, s) < 20)
-                { s = changeChars(s, r.Next(6)); }
+                s = swapWords(s, r.Next(tbSWwords.Value + 1));
+                if (LevenshteinDistance.Compute(original_s, s) < tbMAXMistakes.Value)
+                { s = swapChars(s, r.Next(tbSWchars.Value + 1)); }
+                if (LevenshteinDistance.Compute(original_s, s) < tbMAXMistakes.Value)
+                { s = changeChars(s, r.Next(tbRchars.Value + 1)); }
             }
+
+            if (LevenshteinDistance.Compute(original_s, s) < tbMAXMistakes.Value)
+                s = addWordsAtTheEnd(s, r.Next(tbAWend.Value + 1));
+            if (LevenshteinDistance.Compute(original_s, s) < tbMAXMistakes.Value)
+                s = addWordsAtTheBegin(s, r.Next(tbAWstart.Value + 1));
+            if (LevenshteinDistance.Compute(original_s, s) < tbMAXMistakes.Value)
+                s = addWordsAtTheCenter(s, r.Next(tbAWmiddle.Value + 1));
 
             comparers.ForEach(fe =>
             {
@@ -155,7 +166,7 @@ namespace StringCompare
             }
 
             {
-                var lr = this.results.Where(w => w.method.name == "Sift4DistanceComparer").ToList();                
+                var lr = this.results.Where(w => w.method.name == "Sift4DistanceComparer").ToList();
                 var founded = (double)lr.Where(w => w.founded).Count() / (double)lr.Count * 100;
                 var atime = (double)lr.Sum(s1 => s1.ms) / (double)lr.Count;
                 d4.Text = $"Sift4DistanceComparer: Average time: { atime:0.00}, founded: {founded:0.00}%";
@@ -167,9 +178,57 @@ namespace StringCompare
                 var atime = (double)lr.Sum(s1 => s1.ms) / (double)lr.Count;
                 lco.Text = $"CompareOrdinalComparer: Average time: { atime:0.00}, founded: {founded:0.00}%";
             }
+
+            {
+                var lr = this.results.Where(w => w.method.name == "JaroWinklerComparer").ToList();
+                var founded = (double)lr.Where(w => w.founded).Count() / (double)lr.Count * 100;
+                var atime = (double)lr.Sum(s1 => s1.ms) / (double)lr.Count;
+                lJaro.Text = $"JaroWinklerComparer: Average time: { atime:0.00}, founded: {founded:0.00}%";
+            }
+
+            {
+                var lr = this.results.Where(w => w.method.name == "HammingComparer").ToList();
+                var founded = (double)lr.Where(w => w.founded).Count() / (double)lr.Count * 100;
+                var atime = (double)lr.Sum(s1 => s1.ms) / (double)lr.Count;
+                lHamm.Text = $"HammingComparer: Average time: { atime:0.00}, founded: {founded:0.00}%";
+            }
+
+            {
+                var lr = this.results.Where(w => w.method.name == "DamerauLevenshteinComparer").ToList();
+                var founded = (double)lr.Where(w => w.founded).Count() / (double)lr.Count * 100;
+                var atime = (double)lr.Sum(s1 => s1.ms) / (double)lr.Count;
+                lDamer.Text = $"DamerauLevenshteinComparer: Average time: { atime:0.00}, founded: {founded:0.00}%";
+            }
             
+            {
+                var lr = this.results.Where(w => w.method.name == "SorensenDiceComparer").ToList();
+                var founded = (double)lr.Where(w => w.founded).Count() / (double)lr.Count * 100;
+                var atime = (double)lr.Sum(s1 => s1.ms) / (double)lr.Count;
+                lBitap.Text = $"SorensenDiceComparer: Average time: { atime:0.00}, founded: {founded:0.00}%";
+            }
 
             t.Enabled = true;
+        }
+
+        private string addWordsAtTheEnd(string s, int v)
+        {
+            if (v == 0) return s;
+            return addWordsAtTheEnd(s + " word", v - 1);
+        }
+
+        private string addWordsAtTheBegin(string s, int v)
+        {
+            if (v == 0) return s;
+            return addWordsAtTheBegin("word " + s, v - 1);
+        }
+        private string addWordsAtTheCenter(string s, int v)
+        {
+            if (v == 0) return s;
+            List<string> l = new List<string>(s.Split(' '));
+            if (l.Count == 1) return s;
+            if (l.Count == 2) l.Insert(1, "work");
+            else l.Insert(r.Next(l.Count - 2) + 1, "work");
+            return addWordsAtTheCenter(string.Join(" ", l), v - 1);
         }
 
         private string changeChars(string s, int v)
@@ -210,6 +269,16 @@ namespace StringCompare
             foreach (var m in words)
                 sb.Append(m).Append(" ");
             return swapWords(sb.ToString(), v - 1);
+        }
+
+        private void splitContainer1_Panel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.results.Clear();
         }
     }
 }

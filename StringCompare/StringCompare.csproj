@@ -48,6 +48,11 @@
   <ItemGroup>
     <Compile Include="Comparers\CompareResult.cs" />
     <Compile Include="Comparers\CompareOrdinalComparer.cs" />
+    <Compile Include="Comparers\SorensenDiceComparer.cs" />
+    <Compile Include="Comparers\JaroWinklerComparer.cs" />
+    <Compile Include="Comparers\HammingComparer.cs" />
+    <Compile Include="Comparers\DamerauLevenshteinComparer.cs" />
+    <Compile Include="Comparers\BitapComparer.cs" />
     <Compile Include="Comparers\ngrammsComparrer.cs" />
     <Compile Include="Comparers\Sift4DistanceComparer.cs" />
     <Compile Include="Comparers\LevenshtainComparer.cs" />
